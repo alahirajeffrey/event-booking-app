@@ -1,0 +1,35 @@
+{
+  "name": "event-booking-app",
+  "version": "1.0.0",
+  "description": "event booking app",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node dist/index.js",
+    "dev": "nodemon --watch src --exec ts-node src/index.ts",
+    "build": "tsc -p",
+    "prisma": "npx prisma"
+  },
+  "author": "alahira jeffrey",
+  "license": "MIT",
+  "dependencies": {
+    "@prisma/client": "^4.14.1",
+    "bcrypt": "^5.1.0",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "express-validator": "^7.0.1",
+    "jsonwebtoken": "^9.0.0",
+    "passport": "^0.6.0",
+    "passport-jwt": "^4.0.1",
+    "passport-local": "^1.0.0"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^5.0.0",
+    "@types/express": "^4.17.17",
+    "@types/jsonwebtoken": "^9.0.2",
+    "@types/node": "^20.2.3",
+    "nodemon": "^2.0.22",
+    "prisma": "^4.14.1",
+    "ts-node": "^10.9.1"
+  }
+}
