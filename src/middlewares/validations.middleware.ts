@@ -43,6 +43,9 @@ export const validateChangePassword = {
     oldPassword: Joi.string().required(),
     newPassword: Joi.string().required().min(8),
   }),
+  params: Joi.object({
+    userId: Joi.string().required(),
+  }),
 };
 
 export const validateForgotPassword = {
