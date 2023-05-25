@@ -37,3 +37,17 @@ export const validateRefreshToken = {
     userId: Joi.string().required(),
   }),
 };
+
+export const validateChangePassword = {
+  body: Joi.object({
+    oldPassword: Joi.string().required(),
+    newPassword: Joi.string().required().min(8),
+  }),
+};
+
+export const validateForgotPassword = {
+  body: Joi.object({
+    otp: Joi.string().required(),
+    newPassword: Joi.string().required().min(8),
+  }),
+};
