@@ -1,5 +1,4 @@
 import { Request, Response } from "express";
-import expressAsyncHandler from "express-async-handler";
 import { StatusCodes } from "http-status-codes";
 import bcrypt from "bcrypt";
 import prisma from "../config/prisma.config";
