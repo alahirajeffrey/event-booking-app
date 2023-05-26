@@ -29,11 +29,12 @@ model Event {
   description String
   date        DateTime
   location    String
+  seatPrice   Decimal   @default(0.0)
   organizer   User      @relation(fields: [organizerId], references: [id])
   organizerId String
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
-  review      String
+  review      String?
 
   bookings    Booking[]
   reviews     Review[]
