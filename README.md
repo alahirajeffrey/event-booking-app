@@ -19,7 +19,13 @@ $ npm install
 ### Running migrations
 
 ```
-$ npm run prisma migration
+# development
+$ npm run migrate-dev
+```
+
+```
+# development
+$ npm run migrate-prod
 ```
 
 ### Running the app
@@ -46,7 +52,7 @@ $ npm run test
 
 ## Authentication Endpoints
 
-### Register a New User
+### **Register a New User**
 
 **URL:** `/api/auth/register`
 
@@ -71,7 +77,7 @@ $ npm run test
 }
 ```
 
-### Login a User
+### **Login a User**
 
 **URL:** `/api/auth/login`
 
@@ -92,7 +98,32 @@ $ npm run test
 
 ```json
 {
-  "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+  "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "refreshToken":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+```
+
+### **Change user password**
+
+**URL:** `/api/auth/change-password/:userId`
+
+**Method:** `POST`
+
+**Description:** Change user password.
+
+**Request Body:**
+
+```json
+{
+  "oldPassword": "password123",
+  "newPassword": "password1234"
+}
+```
+
+**Response:**
+
+```json
+{
+  "message": "password changed"
 }
 ```
 

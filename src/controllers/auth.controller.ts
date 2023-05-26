@@ -129,7 +129,8 @@ export const loginUser = async (
  */
 export const changePassword = async (req: Request, res: Response) => {
   try {
-    const { oldPassword, newPassword, userId } = req.body;
+    const { oldPassword, newPassword } = req.body;
+    const { userId } = req.params;
 
     // get user details
     const user = await checkUserExistsById(userId);
