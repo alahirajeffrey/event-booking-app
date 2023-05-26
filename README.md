@@ -54,7 +54,7 @@ $ npm run test
 
 ### **Register a New User**
 
-**URL:** `/api/auth/register`
+**URL:** `/api/v1/auth/register`
 
 **Method:** `POST`
 
@@ -79,7 +79,7 @@ $ npm run test
 
 ### **Login a User**
 
-**URL:** `/api/auth/login`
+**URL:** `/api/v1/auth/login`
 
 **Method:** `POST`
 
@@ -104,7 +104,7 @@ $ npm run test
 
 ### **Change user password**
 
-**URL:** `/api/auth/change-password/:userId`
+**URL:** `/api/v1/auth/change-password/:userId`
 
 **Method:** `POST`
 
@@ -115,7 +115,8 @@ $ npm run test
 ```json
 {
   "oldPassword": "password123",
-  "newPassword": "password1234"
+  "newPassword": "password1234",
+  "userId": "a0b5ed8d-8400-4ee1-a325-cf19ddeed82e"
 }
 ```
 
@@ -124,6 +125,174 @@ $ npm run test
 ```json
 {
   "message": "password changed"
+}
+```
+
+## Event Endpoints
+
+### **Create a new event**
+
+**URL:** `/api/v1/event/register`
+
+**Method:** `POST`
+
+**Description:** Create a new event.
+
+**Request Body:**
+
+```json
+{
+  "title": "test event",
+  "description": "test description",
+  "date": "1970-01-01T00:00:00.000Z",
+  "location": "test location",
+  "organizerId": "a0b5ed8d-8400-4ee1-a325-cf19ddeed82e"
+}
+```
+
+**Response:**
+
+```json
+{
+  "message": "event created"
+}
+```
+
+### **Get events by an organizer id**
+
+**URL:** `/api/v1/event/organizer/:organizerId`
+
+**Method:** `GET`
+
+**Description:** Get all events by an organizer.
+
+**Request Params:**
+
+```json
+{
+  "organizerId": "a0b5ed8d-8400-4ee1-a325-cf19ddeed82e"
+}
+```
+
+**Response:**
+
+```json
+[
+  {
+    "id": "5a3f8efe-d5aa-41a8-9f9b-69d65fc6673b",
+    "title": "test event",
+    "description": "test description",
+    "date": "1970-01-01T00:00:00.000Z",
+    "location": "test location",
+    "organizerId": "a0b5ed8d-8400-4ee1-a325-cf19ddeed82e",
+    "createdAt": "2023-05-26T17:44:42.929Z",
+    "updatedAt": "2023-05-26T17:44:42.929Z",
+    "review": null
+  },
+  {
+    "id": "3e3af82e-e8e7-43c8-9641-5421c135bda0",
+    "title": "test event",
+    "description": "test description",
+    "date": "1970-01-01T00:00:00.000Z",
+    "location": "test location",
+    "organizerId": "a0b5ed8d-8400-4ee1-a325-cf19ddeed82e",
+    "createdAt": "2023-05-26T17:45:06.988Z",
+    "updatedAt": "2023-05-26T17:45:06.988Z",
+    "review": null
+  }
+]
+```
+
+### **Get events id**
+
+**URL:** `/api/v1/event/:eventId`
+
+**Method:** `GET`
+
+**Description:** Get event by id.
+
+**Request Params:**
+
+```json
+{
+  "eventId": "3e3af82e-e8e7-43c8-9641-5421c135bda0"
+}
+```
+
+**Response:**
+
+```json
+{
+  "id": "3e3af82e-e8e7-43c8-9641-5421c135bda0",
+  "title": "test event",
+  "description": "test description",
+  "date": "1970-01-01T00:00:00.000Z",
+  "location": "test location",
+  "organizerId": "a0b5ed8d-8400-4ee1-a325-cf19ddeed82e",
+  "createdAt": "2023-05-26T17:45:06.988Z",
+  "updatedAt": "2023-05-26T17:45:06.988Z",
+  "review": null
+}
+```
+
+### **Delete event by id**
+
+**URL:** `/api/v1/event/:eventId/:organizerId`
+
+**Method:** `DELETE`
+
+**Description:** Delete event by id.
+
+**Request Params:**
+
+```json
+{
+  "eventId": "3e3af82e-e8e7-43c8-9641-5421c135bda0",
+  "organizerId": "a0b5ed8d-8400-4ee1-a325-cf19ddeed82e"
+}
+```
+
+**Response:**
+
+```json
+{
+  "message": "event deleted"
+}
+```
+
+### **Update event by id**
+
+**URL:** `/api/v1/event/:eventId/:organizerId`
+
+**Method:** `PATCH`
+
+**Description:** Update event by id.
+
+**Request Params:**
+
+```json
+{
+  "eventId": "3e3af82e-e8e7-43c8-9641-5421c135bda0",
+  "organizerId": "a0b5ed8d-8400-4ee1-a325-cf19ddeed82e"
+}
+```
+
+**Request Body:**
+
+```json
+{
+  "title": "test event 2",
+  "description": "test description 2",
+  "date": "1970-01-01T00:00:00.000Z",
+  "location": "test location 2"
+}
+```
+
+**Response:**
+
+```json
+{
+  "message": "event updated"
 }
 ```
 
