@@ -56,4 +56,11 @@ eventRouter.delete(
   eventControllers.deleteEvent
 );
 
+eventRouter.patch(
+  "/price/:eventId/:organizerId",
+  passport.authenticate("jwt", { session: false }),
+  validate(validations.validateSetOrUpdateEventPrice),
+  eventControllers.setOrUpdateEventPrice
+);
+
 export default eventRouter;
