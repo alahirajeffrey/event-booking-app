@@ -296,6 +296,39 @@ $ npm run test
 }
 ```
 
+### **Add or update event seat price**
+
+**URL:** `/api/v1/event/price/:eventId/:organizerId`
+
+**Method:** `PATCH`
+
+**Description:** Add or update event seat price.
+
+**Request Params:**
+
+```json
+{
+  "eventId": "3e3af82e-e8e7-43c8-9641-5421c135bda0",
+  "organizerId": "a0b5ed8d-8400-4ee1-a325-cf19ddeed82e"
+}
+```
+
+**Request Body:**
+
+```json
+{
+  "seatPrice": 15000
+}
+```
+
+**Response:**
+
+```json
+{
+  "message": "price added"
+}
+```
+
 ## Author
 
 [Alahira Jeffrey](<(https://github.com/alahirajeffrey)>)
