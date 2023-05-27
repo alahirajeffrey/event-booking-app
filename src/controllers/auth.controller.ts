@@ -127,10 +127,12 @@ export const loginUser = async (
  * @param req : request object containing old password, new password and user id
  * @param res : status code and message
  */
-export const changePassword = async (req: Request, res: Response) => {
+export const changePassword = async (
+  req: Request,
+  res: Response
+): Promise<Response<ApiResponse>> => {
   try {
-    const { oldPassword, newPassword } = req.body;
-    const { userId } = req.params;
+    const { oldPassword, newPassword, userId } = req.body;
 
     // get user details
     const user = await checkUserExistsById(userId);
