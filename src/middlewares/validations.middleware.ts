@@ -106,3 +106,13 @@ export const validateDeleteEvent = {
     organizerId: Joi.string().required().uuid(),
   }),
 };
+
+export const validateSetOrUpdateEventPrice = {
+  params: Joi.object({
+    eventId: Joi.string().required().uuid(),
+    organizerId: Joi.string().required().uuid(),
+  }),
+  body: Joi.object({
+    seatPrice: Joi.number().required(),
+  }),
+};
