@@ -29,7 +29,7 @@ model Event {
   description String
   date        DateTime
   location    String
-  seatPrice   Decimal   @default(0.00)
+  seatPrice   Decimal   @default(0.00)  @db.Decimal(9,2)
   organizer   User      @relation(fields: [organizerId], references: [id])
   organizerId String
   createdAt   DateTime  @default(now())
