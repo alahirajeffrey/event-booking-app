@@ -3,13 +3,16 @@ import { StatusCodes } from "http-status-codes";
 import prisma from "../config/prisma.config";
 import { ApiResponse } from "../types/response.type";
 import decodeToken from "../helpers/decodeToken.helper";
+import EventType from "../types/event.type";
 
 /**
  * checks if an event exists
  * @param eventId : event id
  * @returns an event object or null
  */
-const checkIfEventExists = async (eventId: string) => {
+const checkIfEventExists = async (
+  eventId: string
+): Promise<EventType | null> => {
   return await prisma.event.findFirst({ where: { id: eventId } });
 };
 
@@ -82,7 +85,12 @@ export const getEventById = async (
   try {
     const eventId = req.params.eventId;
 
-    const event = await prisma.event.findFirst({ where: { id: eventId } });
+    const event = await checkIfEventExists(eventId);
+    if (!event) {
+      return res
+        .status(StatusCodes.NOT_FOUND)
+        .json({ message: "event does not exist" });
+    }
 
     return res.status(StatusCodes.OK).json(event);
   } catch (error: any) {

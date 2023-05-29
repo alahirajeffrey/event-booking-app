@@ -9,47 +9,47 @@ const authRouter = Router();
 
 authRouter.post(
   "/register",
-  validate(validations.validateRegisterUser),
+  validate(validations.validateRegisterUser, {}, {}),
   authRoutes.registerUser
 );
 
 authRouter.post(
   "/login",
-  validate(validations.validateLoginUser),
+  validate(validations.validateLoginUser, {}, {}),
   authRoutes.loginUser
 );
 
 authRouter.post(
   "/send-verification-otp",
-  validate(validations.validateSendVerificationOtp),
+  validate(validations.validateSendVerificationOtp, {}, {}),
   passport.authenticate("jwt", { session: false }),
   authRoutes.sendVerificationOtp
 );
 
 authRouter.post(
   "/verify-user",
-  validate(validations.validateVerifyUser),
+  validate(validations.validateVerifyUser, {}, {}),
   passport.authenticate("jwt", { session: false }),
   authRoutes.verifyUser
 );
 
 authRouter.post(
   "/refresh-token",
-  validate(validations.validateRefreshToken),
+  validate(validations.validateRefreshToken, {}, {}),
   passport.authenticate("jwt", { session: false }),
   authRoutes.refreshAccessToken
 );
 
 authRouter.post(
   "/change-password/:userId",
-  validate(validations.validateChangePassword),
+  validate(validations.validateChangePassword, {}, {}),
   passport.authenticate("jwt", { session: false }),
   authRoutes.changePassword
 );
 
 authRouter.post(
   "/forgot-password",
-  validate(validations.validateForgotPassword),
+  validate(validations.validateForgotPassword, {}, {}),
   authRoutes.refreshAccessToken
 );
 
