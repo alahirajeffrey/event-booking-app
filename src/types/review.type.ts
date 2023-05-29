@@ -1,7 +1,7 @@
-type Booking = {
+type Review = {
   id: string;
+  review: string;
   eventId: string;
-  userId: string;
   createdAt: Date;
   updatedAt: Date;
 };
