@@ -15,7 +15,7 @@ const REFRESH_EXPIRESIN = process.env.EXPIRESIN || "1d";
  * @param email : string
  * @returns : user object or null
  */
-const checkUserExistsByEmail = async (email: string) => {
+const checkUserExistsByEmail = async (email: string): Promise<User | null> => {
   return await prisma.user.findFirst({ where: { email: email } });
 };
 
@@ -24,7 +24,7 @@ const checkUserExistsByEmail = async (email: string) => {
  * @param id : string
  * @returns : user object or null
  */
-const checkUserExistsById = async (id: string) => {
+const checkUserExistsById = async (id: string): Promise<User | null> => {
   return await prisma.user.findFirst({ where: { id: id } });
 };
 
@@ -165,7 +165,6 @@ export const changePassword = async (
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json({ message: error.message });
   }
-  res.status(StatusCodes.OK).json({ message: "password changed" });
 };
 
 /**
