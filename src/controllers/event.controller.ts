@@ -3,16 +3,14 @@ import { StatusCodes } from "http-status-codes";
 import prisma from "../config/prisma.config";
 import { ApiResponse } from "../types/response.type";
 import decodeToken from "../helpers/decodeToken.helper";
-import EventType from "../types/event.type";
+import { Event } from "@prisma/client";
 
 /**
  * checks if an event exists
  * @param eventId : event id
  * @returns an event object or null
  */
-const checkIfEventExists = async (
-  eventId: string
-): Promise<EventType | null> => {
+const checkIfEventExists = async (eventId: string): Promise<Event | null> => {
   return await prisma.event.findFirst({ where: { id: eventId } });
 };
 

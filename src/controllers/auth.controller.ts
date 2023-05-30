@@ -4,6 +4,7 @@ import bcrypt from "bcrypt";
 import prisma from "../config/prisma.config";
 import { ApiResponse } from "../types/response.type";
 import jwt from "jsonwebtoken";
+import { User } from "@prisma/client";
 
 const ACCESS_TOKEN_SECRET = process.env.JWT_SECRET || "access_secret";
 const REFRESH_TOKEN_SECRET = process.env.JWT_SECRET || "refresh_secret";
@@ -172,8 +173,14 @@ export const changePassword = async (
  * @param req
  * @param res
  */
-export const sendVerificationOtp = (req: Request, res: Response) => {
-  res.status(StatusCodes.OK).json({ message: "verification otp sent" });
+export const sendVerificationOtp = async (req: Request, res: Response) => {
+  try {
+    res.status(StatusCodes.OK).json({ message: "verification otp sent" });
+  } catch (error: any) {
+    return res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ message: error.message });
+  }
 };
 
 /**
