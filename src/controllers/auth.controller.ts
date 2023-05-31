@@ -5,6 +5,8 @@ import prisma from "../config/prisma.config";
 import { ApiResponse } from "../types/response.type";
 import jwt from "jsonwebtoken";
 import { User } from "@prisma/client";
+import { generateOtp } from "../helpers/generateOtp.helper";
+import sendOtpEmail from "../emails/otp/sendEmailOtp";
 
 const ACCESS_TOKEN_SECRET = process.env.JWT_SECRET || "access_secret";
 const REFRESH_TOKEN_SECRET = process.env.JWT_SECRET || "refresh_secret";
@@ -170,12 +172,31 @@ export const changePassword = async (
 
 /**
  * send verification otp to user via email
- * @param req
- * @param res
+ * @param req : request object containing the user id
+ * @param res: response object
  */
-export const sendVerificationOtp = async (req: Request, res: Response) => {
+export const sendVerificationOtp = async (
+  req: Request,
+  res: Response
+): Promise<Response<ApiResponse>> => {
   try {
-    res.status(StatusCodes.OK).json({ message: "verification otp sent" });
+    const { userId } = req.body;
+
+    const user = await checkUserExistsById(userId);
+    if (!user) {
+      return res
+        .status(StatusCodes.NOT_FOUND)
+        .json({ message: "user not found" });
+    }
+
+    // generate and send otp
+    const otp = generateOtp();
+    await prisma.otp.create({ data: { otp: otp, userId: userId } });
+    await sendOtpEmail(user.email, otp);
+
+    return res
+      .status(StatusCodes.CREATED)
+      .json({ message: "verification otp sent" });
   } catch (error: any) {
     return res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
@@ -185,11 +206,139 @@ export const sendVerificationOtp = async (req: Request, res: Response) => {
 
 /**
  * verify otp sent by user
+ * @param req : request object containing the otp provided and user id
+ * @param res: response object
+ */
+export const verifyUser = async (
+  req: Request,
+  res: Response
+): Promise<Response<ApiResponse>> => {
+  try {
+    const { otpProvided, userId } = req.body.otp;
+
+    // get user details
+    const user = await checkUserExistsById(userId);
+    if (!user) {
+      return res
+        .status(StatusCodes.NOT_FOUND)
+        .json({ message: "user not found" });
+    }
+
+    // get otp details
+    const userOtp = await prisma.otp.findFirst({ where: { userId: user.id } });
+    if (!userOtp) {
+      return res
+        .status(StatusCodes.NOT_FOUND)
+        .json({ message: "otp does not exist" });
+    }
+
+    // check if user otp and otp provided are the same
+    if (otpProvided !== userOtp.otp) {
+      return res
+        .status(StatusCodes.FORBIDDEN)
+        .json({ message: "incorrect otp" });
+    }
+
+    // update user verification status
+    await prisma.user.update({
+      where: { id: userId },
+      data: { isVerified: true },
+    });
+
+    //delete otp
+    await prisma.otp.delete({ where: { id: userOtp.id } });
+
+    return res.status(StatusCodes.OK).json({ message: "user verified" });
+  } catch (error: any) {
+    return res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ message: error.message });
+  }
+};
+
+/**
+ * reset user password
+ * @param req : request object containing new passowrd, otp and email
+ * @param res : response objet
+ */
+export const resetPassword = async (
+  req: Request,
+  res: Response
+): Promise<Response<ApiResponse>> => {
+  try {
+    const { newPassword, otpProvided, email } = req.body;
+
+    // get user details
+    const user = await checkUserExistsById(email);
+    if (!user) {
+      return res
+        .status(StatusCodes.NOT_FOUND)
+        .json({ message: "user not found" });
+    }
+
+    // get current otp in database
+    const userOtp = await prisma.otp.findFirst({ where: { userId: user.id } });
+    if (!userOtp) {
+      return res
+        .status(StatusCodes.NOT_FOUND)
+        .json({ message: "otp does not exist" });
+    }
+
+    // check if user otp and otp provided are the same
+    if (otpProvided !== userOtp.otp) {
+      return res
+        .status(StatusCodes.FORBIDDEN)
+        .json({ message: "incorrect otp" });
+    }
+
+    // hash new password and update password field in db
+    const saltRounds = 12;
+    const newPasswordHash = await bcrypt.hash(newPassword, saltRounds);
+
+    await prisma.user.update({
+      where: { email: email },
+      data: { password: newPasswordHash },
+    });
+
+    // delete otp after updating password
+    await prisma.otp.delete({ where: { id: userOtp.id } });
+
+    return res.status(StatusCodes.OK).json({ message: "password changed" });
+  } catch (error: any) {
+    return res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ message: error.message });
+  }
+};
+
+/**
+ * send reset password otp to user
  * @param req
  * @param res
  */
-export const verifyUser = (req: Request, res: Response) => {
-  res.status(StatusCodes.OK).json({ message: "user verified" });
+export const sendResetPasswordOtp = async (req: Request, res: Response) => {
+  try {
+    const email = req.body.email;
+
+    // get user details
+    const userExists = await checkUserExistsByEmail(email);
+    if (!userExists) {
+      return res
+        .status(StatusCodes.NOT_FOUND)
+        .json({ message: "user not found" });
+    }
+
+    // generate and send otp
+    const otp = generateOtp();
+    await prisma.otp.create({ data: { otp: otp, userId: userExists.id } });
+    await sendOtpEmail(userExists.email, otp);
+
+    return res.status(StatusCodes.CREATED).json({ message: "reset otp sent" });
+  } catch (error: any) {
+    return res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ message: error.message });
+  }
 };
 
 /**
@@ -199,12 +348,4 @@ export const verifyUser = (req: Request, res: Response) => {
  */
 export const refreshAccessToken = async (req: Request, res: Response) => {
   res.status(StatusCodes.OK).json({ message: "accesh token refreshed" });
-};
-/**
- * reset user password
- * @param req
- * @param res
- */
-export const forgotPassword = async (req: Request, res: Response) => {
-  res.status(StatusCodes.OK).json({ message: "password changed" });
 };
