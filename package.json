@@ -4,7 +4,7 @@
   "description": "event booking app",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "start": "node dist/index.js",
     "dev": "nodemon --watch src --exec ts-node src/index.ts",
     "build": "tsc -p",
@@ -39,6 +39,7 @@
     "@types/jest": "^29.5.1",
     "@types/jsonwebtoken": "^9.0.2",
     "@types/node": "^20.2.3",
+    "@types/supertest": "^2.0.12",
     "jest": "^29.5.0",
     "nodemon": "^2.0.22",
     "prisma": "^4.14.1",
