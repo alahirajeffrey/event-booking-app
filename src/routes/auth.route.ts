@@ -34,13 +34,6 @@ authRouter.post(
 );
 
 authRouter.post(
-  "/refresh-token",
-  validate(validations.validateRefreshToken, {}, {}),
-  passport.authenticate("jwt", { session: false }),
-  authRoutes.refreshAccessToken
-);
-
-authRouter.post(
   "/change-password/:userId",
   validate(validations.validateChangePassword, {}, {}),
   passport.authenticate("jwt", { session: false }),
@@ -48,8 +41,20 @@ authRouter.post(
 );
 
 authRouter.post(
-  "/forgot-password",
-  validate(validations.validateForgotPassword, {}, {}),
+  "/send-reset-password-otp",
+  validate(validations.validateSendResetPasswordOtp, {}, {}),
+  authRoutes.sendResetPasswordOtp
+);
+
+authRouter.post(
+  "/reset-password",
+  validate(validations.validateResetPassword, {}, {}),
+  authRoutes.resetPassword
+);
+
+authRouter.post(
+  "/refresh-token",
+  validate(validations.validateRefreshToken, {}, {}),
   authRoutes.refreshAccessToken
 );
 
