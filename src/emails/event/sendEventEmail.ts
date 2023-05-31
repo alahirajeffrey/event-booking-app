@@ -13,7 +13,7 @@ enum EventStatusEnum {
  * @param to : email of the reciepient
  * @param otp : otp to be sent
  */
-const sendOtpEmail = async (
+const sendEventEmail = async (
   to: string,
   eventId: string,
   time: Date,
@@ -44,4 +44,4 @@ const sendOtpEmail = async (
     });
 };
 
-export default sendOtpEmail;
+export default sendEventEmail;
