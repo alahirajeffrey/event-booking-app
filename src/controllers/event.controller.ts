@@ -4,6 +4,10 @@ import prisma from "../config/prisma.config";
 import { ApiResponse } from "../types/response.type";
 import decodeToken from "../helpers/decodeToken.helper";
 import { Event } from "@prisma/client";
+import sendEventEmail, {
+  sendPriceSetorUpdateEmail,
+  EventStatusEnum,
+} from "../emails/event/sendEventEmail";
 
 /**
  * checks if an event exists
@@ -16,7 +20,7 @@ const checkIfEventExists = async (eventId: string): Promise<Event | null> => {
 
 /**
  * create an event
- * @param req : request object containing title, description, date, location, organizerId and price
+ * @param req : request object containing title, description, date, location, organizerId and organizerEmail
  * @param res : response object
  * @returns : status code and message
  */
@@ -25,9 +29,10 @@ export const createEvent = async (
   res: Response
 ): Promise<Response<ApiResponse>> => {
   try {
-    const { title, description, date, location, organizerId } = req.body;
+    const { title, description, date, location, organizerId, organizerEmail } =
+      req.body;
 
-    await prisma.event.create({
+    const event = await prisma.event.create({
       data: {
         title: title,
         description: description,
@@ -36,6 +41,16 @@ export const createEvent = async (
         organizerId: organizerId,
       },
     });
+
+    // send email to organizer after event is created
+    await sendEventEmail(
+      organizerEmail,
+      event.id,
+      event.date,
+      event.location,
+      EventStatusEnum.Created
+    );
+
     return res.status(StatusCodes.CREATED).json({ message: "event created" });
   } catch (error: any) {
     return res
@@ -110,7 +125,7 @@ export const updateEvent = async (
 ): Promise<Response<ApiResponse>> => {
   try {
     const { eventId, organizerId } = req.params;
-    const { title, description, date, location } = req.body;
+    const { title, description, date, location, email } = req.body;
 
     // check if event exists
     const eventExists = await checkIfEventExists(eventId);
@@ -130,7 +145,7 @@ export const updateEvent = async (
         .json({ message: "you cannot update an event you did not create" });
     }
 
-    await prisma.event.update({
+    const updatedEvent = await prisma.event.update({
       where: { id: eventId },
       data: {
         title: title,
@@ -139,6 +154,16 @@ export const updateEvent = async (
         location: location,
       },
     });
+
+    // send email to organizer
+    await sendEventEmail(
+      email,
+      updatedEvent.id,
+      updatedEvent.date,
+      updatedEvent.location,
+      EventStatusEnum.Updated
+    );
+
     return res.status(StatusCodes.OK).json({ message: "event updated" });
   } catch (error: any) {
     return res
@@ -159,6 +184,7 @@ export const deleteEvent = async (
 ): Promise<Response<ApiResponse>> => {
   try {
     const { eventId, organizerId } = req.params;
+    const email = req.body.email;
 
     // check if event exists
     const eventExists = await checkIfEventExists(eventId);
@@ -180,6 +206,15 @@ export const deleteEvent = async (
 
     await prisma.event.delete({ where: { id: eventId } });
 
+    // send email notifying organizer of event deletion
+    await sendEventEmail(
+      email,
+      eventExists.id,
+      eventExists.date,
+      eventExists.location,
+      EventStatusEnum.Deleted
+    );
+
     return res.status(StatusCodes.OK).json({ message: "event deleted" });
   } catch (error: any) {
     return res
@@ -189,7 +224,7 @@ export const deleteEvent = async (
 };
 
 /**
- *
+ *sets or updates the price of an event
  * @param req : request object containing eventId and organizerId params
  * @param res : response object
  * @returns : status code and response message
@@ -200,7 +235,7 @@ export const setOrUpdateEventPrice = async (
 ): Promise<Response<ApiResponse>> => {
   try {
     const { eventId, organizerId } = req.params;
-    const seatPrice = req.body.seatPrice;
+    const { seatPrice, email } = req.body;
 
     // check if event exists
     const eventExists = await checkIfEventExists(eventId);
@@ -224,6 +259,10 @@ export const setOrUpdateEventPrice = async (
       where: { id: eventId },
       data: { seatPrice: seatPrice },
     });
+
+    // notify organizer of price changes
+    await sendPriceSetorUpdateEmail(email, eventExists.id);
+
     return res.status(StatusCodes.OK).json({ message: "price added" });
   } catch (error: any) {
     return res
