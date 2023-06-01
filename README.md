@@ -1,5 +1,14 @@
 # Event Booking App API Documentation
 
+## Features
+
+- Authentication
+- Authorization
+- Stripe payment integration
+- Email notification
+- Google calender integration
+- Qr code generation
+
 ## Requirements
 
 - [Nodejs](https://nodejs.org/en/) is a JavaScript runtime built on Chrome's V8 JavaScript engine.
@@ -125,6 +134,105 @@ $ npm run test
 ```json
 {
   "message": "password changed"
+}
+```
+
+### **Send email verification otp**
+
+**URL:** `/api/v1/auth/send-verification-otp/`
+
+**Method:** `POST`
+
+**Description:** Send email verification otp.
+
+**Request Body:**
+
+```json
+{
+  "email": "alahirajeffrey@gmail.com"
+}
+```
+
+**Response:**
+
+```json
+{
+  "message": "verification otp sent"
+}
+```
+
+### **Verify user email**
+
+**URL:** `/api/v1/auth/verify-user/`
+
+**Method:** `POST`
+
+**Description:** Verify user.
+
+**Request Body:**
+
+```json
+{
+  "userId": "a0b5ed8d-8400-4ee1-a325-cf19ddeed82e",
+  "otpProvided": "5543"
+}
+```
+
+**Response:**
+
+```json
+{
+  "message": "user verified"
+}
+```
+
+### **Send reset password otp**
+
+**URL:** `/api/v1/auth/send-reset-password-otp/`
+
+**Method:** `POST`
+
+**Description:** Send reset password otp.
+
+**Request Body:**
+
+```json
+{
+  "email": "alahirajeffrey@gmail.com"
+}
+```
+
+**Response:**
+
+```json
+{
+  "message": "reset otp sent"
+}
+```
+
+### **Reset password**
+
+**URL:** `/api/v1/auth/reset-password/`
+
+**Method:** `POST`
+
+**Description:** Reset password.
+
+**Request Body:**
+
+```json
+{
+  "email": "alahirajeffrey@gmail.com",
+  "otpProvided:"5432",
+  "newPassword":"newPassword"
+}
+```
+
+**Response:**
+
+```json
+{
+  "message": "password reset"
 }
 ```
 
