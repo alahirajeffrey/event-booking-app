@@ -16,16 +16,14 @@ export const validateLoginUser = {
 
 export const validateSendVerificationOtp = {
   body: Joi.object({
-    email: Joi.string().email().required(),
-  }),
-  params: Joi.object({
     userId: Joi.string().guid().required(),
   }),
 };
 
 export const validateVerifyUser = {
   body: Joi.object({
-    otp: Joi.string().required().min(4),
+    otpProvided: Joi.string().required().min(4),
+    userId: Joi.string().guid().required(),
   }),
 };
 
@@ -46,10 +44,17 @@ export const validateChangePassword = {
   }),
 };
 
-export const validateForgotPassword = {
+export const validateResetPassword = {
   body: Joi.object({
-    otp: Joi.string().required(),
+    otpProvided: Joi.string().required(),
     newPassword: Joi.string().required().min(8),
+    email: Joi.string().required().email(),
+  }),
+};
+
+export const validateSendResetPasswordOtp = {
+  body: Joi.object({
+    email: Joi.string().email().required(),
   }),
 };
 
@@ -60,6 +65,7 @@ export const validateCreateEvent = {
     date: Joi.string().required().isoDate(),
     location: Joi.string().required(),
     organizerId: Joi.string().required().uuid(),
+    organizerEmail: Joi.string().required().email(),
   }),
 };
 
@@ -105,6 +111,9 @@ export const validateDeleteEvent = {
     eventId: Joi.string().required().uuid(),
     organizerId: Joi.string().required().uuid(),
   }),
+  body: Joi.object({
+    email: Joi.string().email().required(),
+  }),
 };
 
 export const validateSetOrUpdateEventPrice = {
@@ -114,5 +123,6 @@ export const validateSetOrUpdateEventPrice = {
   }),
   body: Joi.object({
     seatPrice: Joi.number().required(),
+    email: Joi.string().email().required(),
   }),
 };

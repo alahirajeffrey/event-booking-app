@@ -4,7 +4,7 @@
   "description": "event booking app",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "start": "node dist/index.js",
     "dev": "nodemon --watch src --exec ts-node src/index.ts",
     "build": "tsc -p",
@@ -28,9 +28,11 @@
     "googleapis": "^118.0.0",
     "http-status-codes": "^2.2.0",
     "jsonwebtoken": "^9.0.0",
+    "nodemailer": "^6.8.0",
     "passport": "^0.6.0",
     "passport-jwt": "^4.0.1",
-    "passport-local": "^1.0.0"
+    "passport-local": "^1.0.0",
+    "winston": "^3.9.0"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.0",
@@ -38,6 +40,8 @@
     "@types/jest": "^29.5.1",
     "@types/jsonwebtoken": "^9.0.2",
     "@types/node": "^20.2.3",
+    "@types/nodemailer": "^6.4.8",
+    "@types/supertest": "^2.0.12",
     "jest": "^29.5.0",
     "nodemon": "^2.0.22",
     "prisma": "^4.14.1",
