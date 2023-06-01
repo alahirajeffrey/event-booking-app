@@ -65,6 +65,7 @@ export const validateCreateEvent = {
     date: Joi.string().required().isoDate(),
     location: Joi.string().required(),
     organizerId: Joi.string().required().uuid(),
+    organizerEmail: Joi.string().required().email(),
   }),
 };
 
@@ -110,6 +111,9 @@ export const validateDeleteEvent = {
     eventId: Joi.string().required().uuid(),
     organizerId: Joi.string().required().uuid(),
   }),
+  body: Joi.object({
+    email: Joi.string().email().required(),
+  }),
 };
 
 export const validateSetOrUpdateEventPrice = {
@@ -119,5 +123,6 @@ export const validateSetOrUpdateEventPrice = {
   }),
   body: Joi.object({
     seatPrice: Joi.number().required(),
+    email: Joi.string().email().required(),
   }),
 };
