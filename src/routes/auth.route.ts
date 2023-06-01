@@ -20,6 +20,13 @@ authRouter.post(
 );
 
 authRouter.post(
+  "/change-password/:userId",
+  validate(validations.validateChangePassword, {}, {}),
+  passport.authenticate("jwt", { session: false }),
+  authRoutes.changePassword
+);
+
+authRouter.post(
   "/send-verification-otp",
   validate(validations.validateSendVerificationOtp, {}, {}),
   passport.authenticate("jwt", { session: false }),
@@ -31,13 +38,6 @@ authRouter.post(
   validate(validations.validateVerifyUser, {}, {}),
   passport.authenticate("jwt", { session: false }),
   authRoutes.verifyUser
-);
-
-authRouter.post(
-  "/change-password/:userId",
-  validate(validations.validateChangePassword, {}, {}),
-  passport.authenticate("jwt", { session: false }),
-  authRoutes.changePassword
 );
 
 authRouter.post(
