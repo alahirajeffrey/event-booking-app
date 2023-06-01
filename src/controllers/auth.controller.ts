@@ -303,7 +303,7 @@ export const resetPassword = async (
     // delete otp after updating password
     await prisma.otp.delete({ where: { id: userOtp.id } });
 
-    return res.status(StatusCodes.OK).json({ message: "password changed" });
+    return res.status(StatusCodes.OK).json({ message: "password reset" });
   } catch (error: any) {
     return res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
