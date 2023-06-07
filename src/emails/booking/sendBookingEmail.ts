@@ -1,18 +1,33 @@
 import logger from "../../helpers/logger";
 import transporter from "../transporter";
+import QRCode from "qrcode";
 
-// convert booking details to qr code
+/**
+ * send booking details via email
+ * @param to : reciever email
+ * @param eventTitle : title of the event
+ * @param time : time of the event
+ * @param location : location of the event
+ * @param paymentId : payment id if the event is paid or null if it is free
+ */
 const sendBookingEmail = async (
   to: string,
-  eventId: string,
+  eventTitle: string,
   time: Date,
-  location: string
+  location: string,
+  paymentId: string | null
 ) => {
+  const qrcEncodedMessage = QRCode.toDataURL(`${eventTitle} booked.
+                                                Event date: ${time}.
+                                                Location: ${location}
+                                                PaymentId: ${paymentId}`);
+
   const mailOptions = {
     from: "alahirajeffrey@gmail.com",
     to: to,
     subject: "Booking details",
-    text: "",
+    attachDataUrls: true,
+    text: `"<img src = ${qrcEncodedMessage}>`,
   };
 
   await transporter
