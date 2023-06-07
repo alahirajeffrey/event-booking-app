@@ -26,6 +26,7 @@ authRouter.post(
   authRoutes.changePassword
 );
 
+// test later
 authRouter.post(
   "/send-verification-otp",
   validate(validations.validateSendVerificationOtp, {}, {}),
@@ -33,6 +34,7 @@ authRouter.post(
   authRoutes.sendVerificationOtp
 );
 
+// test later
 authRouter.post(
   "/verify-user",
   validate(validations.validateVerifyUser, {}, {}),
