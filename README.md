@@ -8,6 +8,7 @@
 - Email notification
 - Google calender integration
 - Qr code generation
+- Rate limiting
 
 ## Requirements
 

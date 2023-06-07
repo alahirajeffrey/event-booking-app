@@ -269,7 +269,7 @@ export const resetPassword = async (
     const { newPassword, otpProvided, email } = req.body;
 
     // get user details
-    const user = await checkUserExistsById(email);
+    const user = await checkUserExistsByEmail(email);
     if (!user) {
       return res
         .status(StatusCodes.NOT_FOUND)

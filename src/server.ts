@@ -1,10 +1,12 @@
 import express, { Express, Request, Response } from "express";
 import authRouter from "./routes/auth.route";
 import eventRouter from "./routes/event.route";
+import limiter from "./middlewares/rateLimiter.middleware";
 
 const server: Express = express();
 
 server.use(express.json());
+server.use(limiter);
 
 // setup routes here
 server.use("/api/v1/auth/", authRouter);
