@@ -103,6 +103,7 @@ export const validateUpdateEvent = {
     description: Joi.string().optional(),
     date: Joi.string().optional().isoDate(),
     location: Joi.string().optional(),
+    email: Joi.string().email().required(),
   }),
 };
 

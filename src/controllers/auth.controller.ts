@@ -214,7 +214,7 @@ export const verifyUser = async (
   res: Response
 ): Promise<Response<ApiResponse>> => {
   try {
-    const { otpProvided, userId } = req.body.otp;
+    const { otpProvided, userId } = req.body;
 
     // get user details
     const user = await checkUserExistsById(userId);

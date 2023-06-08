@@ -166,7 +166,7 @@ $ npm run test
 
 **URL:** `/api/v1/auth/verify-user/`
 
-**Method:** `POST`
+**Method:** `PATCH`
 
 **Description:** Verify user.
 
@@ -191,7 +191,7 @@ $ npm run test
 
 **URL:** `/api/v1/auth/send-reset-password-otp/`
 
-**Method:** `POST`
+**Method:** `PATCH`
 
 **Description:** Send reset password otp.
 
@@ -255,7 +255,8 @@ $ npm run test
   "description": "test description",
   "date": "1970-01-01T00:00:00.000Z",
   "location": "test location",
-  "organizerId": "a0b5ed8d-8400-4ee1-a325-cf19ddeed82e"
+  "organizerId": "a0b5ed8d-8400-4ee1-a325-cf19ddeed82e",
+  "organizerEmail": "alahirajeffrey@gmail.com"
 }
 ```
 
@@ -312,7 +313,7 @@ $ npm run test
 ]
 ```
 
-### **Get events id**
+### **Get events by event id**
 
 **URL:** `/api/v1/event/:eventId`
 
@@ -393,7 +394,8 @@ $ npm run test
   "title": "test event 2",
   "description": "test description 2",
   "date": "1970-01-01T00:00:00.000Z",
-  "location": "test location 2"
+  "location": "test location 2",
+  "email": "alahirajeffrey@gmail.com"
 }
 ```
 
@@ -426,7 +428,8 @@ $ npm run test
 
 ```json
 {
-  "seatPrice": 15000
+  "seatPrice": 15000,
+  "email": "alahirajeffrey@gmail.com"
 }
 ```
 
@@ -434,7 +437,8 @@ $ npm run test
 
 ```json
 {
-  "message": "price added"
+  "message": "price added",
+  "email": "alahirajeffrey@gmail.com"
 }
 ```
 
