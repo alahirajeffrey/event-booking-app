@@ -25,7 +25,7 @@ const sendEventEmail = async (
   const mailOptions = {
     from: "alahirajeffrey@gmail.com",
     to: to,
-    subject: "Event created",
+    subject: `Event ${eventStatus}`,
     text: `Hi there, Your event has been ${eventStatus}. 
     
             Event id : ${eventId}
@@ -58,7 +58,7 @@ export const sendPriceSetorUpdateEmail = async (
   const mailOptions = {
     from: "alahirajeffrey@gmail.com",
     to: to,
-    subject: "Event created",
+    subject: "Seat Price Updated",
     text: `Hi there, 
     
     The seat price for your event with id: ${eventId} has been updated.`,
