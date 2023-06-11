@@ -2,6 +2,11 @@ import logger from "../../helpers/logger";
 import transporter from "../transporter";
 import QRCode from "qrcode";
 
+export enum EventStatusEnum {
+  Created = "created",
+  Canceled = "canceled",
+}
+
 /**
  * send booking details via email
  * @param to : reciever email
@@ -15,9 +20,10 @@ const sendBookingEmail = async (
   eventTitle: string,
   time: Date,
   location: string,
-  paymentId: string | null
+  paymentId: string | null,
+  subject: EventStatusEnum
 ) => {
-  const qrcEncodedMessage = QRCode.toDataURL(`${eventTitle} booked.
+  const qrcEncodedMessage = await QRCode.toDataURL(`${eventTitle} booked.
                                                 Event date: ${time}.
                                                 Location: ${location}
                                                 PaymentId: ${paymentId}`);
@@ -25,9 +31,9 @@ const sendBookingEmail = async (
   const mailOptions = {
     from: "alahirajeffrey@gmail.com",
     to: to,
-    subject: "Booking details",
+    subject: `Booking ${subject}`,
     attachDataUrls: true,
-    text: `"<img src = ${qrcEncodedMessage}>`,
+    text: "<img src=" + qrcEncodedMessage + ">",
   };
 
   await transporter
