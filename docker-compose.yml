@@ -1,0 +1,32 @@
+version: "3.8"
+services:
+  test_db:
+    image: postgres:14.1-alpine
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+    restart: always
+    ports:
+      - "5432: 5432"
+    volumes:
+      - db:/var/lib/postgres/data
+    networks:
+      - event-booking-api
+  prod_db:
+    image: postgres:14.1-alpine
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+    restart: always
+    ports:
+      - "5432: 5432"
+    volumes:
+      - db:/var/lib/postgres/data
+    networks:
+      - event-booking-api
+networks:
+  event-booking-api:
+    driver: bridge
+volumes:
+  postgres-data:
+    driver: local
