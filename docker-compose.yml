@@ -13,14 +13,17 @@ services:
 
   prod_db:
     image: postgres:14.1-alpine
+    env_file:
+      - .env
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=password
+      - POSTGRES_USER = ${POSTGRES_USER}
+      - POSTGRES_PASSWORD = ${POSTGRES_PASSWORD}
+      - POSTGRES_DB = ${POSTGRES_DB}
     restart: always
     ports:
       - "5432: 5432"
     volumes:
-      - /db/postgres/data
+      - postgres:/data/postgres
     networks:
       - event-booking-api
 
@@ -37,5 +40,4 @@ networks:
   event-booking-api:
     driver: bridge
 volumes:
-  postgres-data:
-    driver: local
+  postgres:
