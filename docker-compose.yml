@@ -8,10 +8,9 @@ services:
     restart: always
     ports:
       - "5432: 5432"
-    volumes:
-      - db:/var/lib/postgres/data
     networks:
       - event-booking-api
+
   prod_db:
     image: postgres:14.1-alpine
     environment:
@@ -21,9 +20,19 @@ services:
     ports:
       - "5432: 5432"
     volumes:
-      - db:/var/lib/postgres/data
+      - /db/postgres/data
     networks:
       - event-booking-api
+
+  api:
+    depends_on:
+      - prod_db
+    build: .
+    networks:
+      - event-booking-api
+    ports:
+      - "5000:5000"
+
 networks:
   event-booking-api:
     driver: bridge
