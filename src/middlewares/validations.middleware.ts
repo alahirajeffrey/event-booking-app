@@ -131,6 +131,7 @@ export const validateSetOrUpdateEventPrice = {
 export const validateBookAFreeEvent = {
   body: Joi.object({
     eventId: Joi.string().required().uuid(),
+    email: Joi.string().email().required(),
   }),
 };
 
