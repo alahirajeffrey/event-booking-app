@@ -23,17 +23,18 @@ const sendBookingEmail = async (
   paymentId: string | null,
   subject: EventStatusEnum
 ) => {
-  const qrcEncodedMessage = await QRCode.toDataURL(`${eventTitle} booked.
-                                                Event date: ${time}.
-                                                Location: ${location}
-                                                PaymentId: ${paymentId}`);
+  const emailString = `${eventTitle} booked. \nEvent date: ${time}. \nLocation: ${location}. \nPaymentId: ${paymentId}`;
+
+  const qrcEncodedMessage = await QRCode.toDataURL(emailString);
 
   const mailOptions = {
     from: "alahirajeffrey@gmail.com",
     to: to,
     subject: `Booking ${subject}`,
     attachDataUrls: true,
-    text: "<img src=" + qrcEncodedMessage + ">",
+    html: `<p>Scan the QR code to view your booking details</p>
+          <br>
+          <img src=${qrcEncodedMessage}>`,
   };
 
   await transporter
