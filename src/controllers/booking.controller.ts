@@ -17,7 +17,7 @@ export const bookAFreeEvent = async (
   res: Response
 ): Promise<Response<ApiResponse>> => {
   try {
-    const eventId = req.body.eventId;
+    const { eventId, email } = req.body;
 
     // check if event exists
     const eventExists = await prisma.event.findFirst({
@@ -48,7 +48,7 @@ export const bookAFreeEvent = async (
 
     // send booking details via email
     await sendBookingEmail(
-      user.email,
+      email,
       eventExists.title,
       eventExists.date,
       eventExists.location,
