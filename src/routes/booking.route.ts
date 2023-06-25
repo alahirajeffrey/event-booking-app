@@ -14,18 +14,18 @@ bookingRouter.post(
   bookingRoutes.bookAFreeEvent
 );
 
-bookingRouter.post(
-  "/book-paid-event",
-  //   validate(validations.validateBookAPaidEvent, {}, {}),
-  //   passport.authenticate("jwt", { session: false }),
-  bookingRoutes.bookAPaidEvent
-);
-
 bookingRouter.delete(
   "/cancel-free-booking/:bookingId",
   validate(validations.validateCancelAFreeBooking, {}, {}),
   passport.authenticate("jwt", { session: false }),
   bookingRoutes.cancelAFreeBooking
+);
+
+bookingRouter.post(
+  "/book-paid-event",
+  //   validate(validations.validateBookAPaidEvent, {}, {}),
+  //   passport.authenticate("jwt", { session: false }),
+  bookingRoutes.bookAPaidEvent
 );
 
 bookingRouter.delete(
