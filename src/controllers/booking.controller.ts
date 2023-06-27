@@ -6,6 +6,30 @@ import sendBookingEmail, {
 } from "../emails/booking/sendBookingEmail";
 import prisma from "../config/prisma.config";
 import decodeToken from "../helpers/decodeToken.helper";
+import { google } from "googleapis";
+import config from "../config/config.config";
+
+const oauth2Client = new google.auth.OAuth2(
+  config.OAUTH_CLIENT_ID,
+  config.OAUTH_CLIENT_SECRET,
+  `${config.OAUTH_REDIRECT_BASE_URI}:${config.PORT}/auth/google/callback`
+);
+const calendar = google.calendar({ version: "v3", auth: oauth2Client });
+
+export const authGoogle = (req: Request, res: Response) => {
+  const authUrl = oauth2Client.generateAuthUrl({
+    access_type: "offline",
+    scope: ["https://www.googleapis.com/auth/calendar"],
+  });
+  res.redirect(authUrl);
+};
+
+export const authGoogleCallback = async (req: Request, res: Response) => {
+  const code = req.query.code as string;
+  const { tokens } = await oauth2Client.getToken(code.toString());
+  oauth2Client.setCredentials(tokens);
+  res.redirect("/calendar");
+};
 
 /**
  * book a free event
@@ -55,6 +79,8 @@ export const bookAFreeEvent = async (
       null,
       EventStatusEnum.Created
     );
+
+    calendar.events.insert({});
 
     return res.status(StatusCodes.OK).json({
       message: "event booked. booking details have been sent to your mail",
