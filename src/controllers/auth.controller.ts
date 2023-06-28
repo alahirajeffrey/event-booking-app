@@ -7,11 +7,7 @@ import jwt from "jsonwebtoken";
 import { User } from "@prisma/client";
 import { generateOtp } from "../helpers/generateOtp.helper";
 import { publisher } from "../services/rabbitmq-pulisher.service";
-
-const ACCESS_TOKEN_SECRET = process.env.JWT_SECRET || "access_secret";
-const REFRESH_TOKEN_SECRET = process.env.JWT_SECRET || "refresh_secret";
-const ACCESS_EXPIRESIN = process.env.EXPIRESIN || "1d";
-const REFRESH_EXPIRESIN = process.env.EXPIRESIN || "1d";
+import config from "../config/config.config";
 
 /**
  * checks if a user exists or not by email
@@ -100,14 +96,22 @@ export const loginUser = async (
     }
 
     // generate access tokens if password match
-    const accessToken = jwt.sign({ id: userExists.id }, ACCESS_TOKEN_SECRET, {
-      expiresIn: ACCESS_EXPIRESIN,
-    });
+    const accessToken = jwt.sign(
+      { id: userExists.id },
+      config.JWT_ACCESS_TOKEN,
+      {
+        expiresIn: config.EXPIRES_IN,
+      }
+    );
 
     // generate refresh tokens
-    const refreshToken = jwt.sign({ id: userExists.id }, REFRESH_TOKEN_SECRET, {
-      expiresIn: REFRESH_EXPIRESIN,
-    });
+    const refreshToken = jwt.sign(
+      { id: userExists.id },
+      config.JWT_REFRESH_TOKEN,
+      {
+        expiresIn: config.EXPIRES_IN,
+      }
+    );
 
     // update user data with refresh token
     await prisma.user.update({
