@@ -5,7 +5,7 @@ import config from "../config/config.config";
 
 const opts = {
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-  secretOrKey: config.JWT_SECRET,
+  secretOrKey: config.JWT_ACCESS_TOKEN,
 };
 
 // setup jwt passport strategy
