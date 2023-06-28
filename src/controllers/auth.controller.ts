@@ -6,12 +6,11 @@ import { ApiResponse } from "../types/response.type";
 import jwt from "jsonwebtoken";
 import { User } from "@prisma/client";
 import { generateOtp } from "../helpers/generateOtp.helper";
-import sendOtpEmail from "../emails/otp/sendEmailOtp";
 import { sendMessage } from "../services/rabbitmq-pulisher.service";
 
 const ACCESS_TOKEN_SECRET = process.env.JWT_SECRET || "access_secret";
 const REFRESH_TOKEN_SECRET = process.env.JWT_SECRET || "refresh_secret";
-const ACCESS_EXPIRESIN = process.env.EXPIRESIN || "15m";
+const ACCESS_EXPIRESIN = process.env.EXPIRESIN || "1d";
 const REFRESH_EXPIRESIN = process.env.EXPIRESIN || "1d";
 
 /**
