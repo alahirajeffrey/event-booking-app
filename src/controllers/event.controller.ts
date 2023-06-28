@@ -4,10 +4,8 @@ import prisma from "../config/prisma.config";
 import { ApiResponse } from "../types/response.type";
 import decodeToken from "../helpers/decodeToken.helper";
 import { Event } from "@prisma/client";
-import sendEventEmail, {
-  sendPriceSetorUpdateEmail,
-  EventStatusEnum,
-} from "../emails/event/sendEventEmail";
+import { publisher } from "../services/rabbitmq-pulisher.service";
+import { EventStatusEnum } from "../common/enums/event-status.enum";
 
 /**
  * checks if an event exists
@@ -42,14 +40,17 @@ export const createEvent = async (
       },
     });
 
-    // send email to organizer after event is created
-    await sendEventEmail(
-      organizerEmail,
-      event.id,
-      event.date,
-      event.location,
-      EventStatusEnum.Created
-    );
+    // create payload
+    const payload = {
+      to: organizerEmail,
+      eventId: event.id,
+      location: event.location,
+      time: event.date,
+      eventStatus: EventStatusEnum.Created,
+    };
+
+    // send payload to notification microservice to send email
+    await publisher(payload, "NOTIFICATION", "send-event-details");
 
     return res.status(StatusCodes.CREATED).json({ message: "event created" });
   } catch (error: any) {
@@ -155,14 +156,17 @@ export const updateEvent = async (
       },
     });
 
-    // send email to organizer
-    await sendEventEmail(
-      email,
-      updatedEvent.id,
-      updatedEvent.date,
-      updatedEvent.location,
-      EventStatusEnum.Updated
-    );
+    // create payload
+    const payload = {
+      to: email,
+      eventId: updatedEvent.id,
+      location: updatedEvent.location,
+      time: updatedEvent.location,
+      eventStatus: EventStatusEnum.Updated,
+    };
+
+    // send payload to notification microservice to send email
+    await publisher(payload, "NOTIFICATION", "send-event-details");
 
     return res.status(StatusCodes.OK).json({ message: "event updated" });
   } catch (error: any) {
@@ -206,14 +210,17 @@ export const deleteEvent = async (
 
     await prisma.event.delete({ where: { id: eventId } });
 
-    // send email notifying organizer of event deletion
-    await sendEventEmail(
-      email,
-      eventExists.id,
-      eventExists.date,
-      eventExists.location,
-      EventStatusEnum.Deleted
-    );
+    // create payload
+    const payload = {
+      to: email,
+      eventId: eventExists.id,
+      location: eventExists.location,
+      time: eventExists.date,
+      eventStatus: EventStatusEnum.Canceled,
+    };
+
+    // send payload to notification microservice to send email
+    await publisher(payload, "NOTIFICATION", "send-event-details");
 
     return res.status(StatusCodes.OK).json({ message: "event deleted" });
   } catch (error: any) {
@@ -260,8 +267,14 @@ export const setOrUpdateEventPrice = async (
       data: { seatPrice: seatPrice },
     });
 
-    // notify organizer of price changes
-    await sendPriceSetorUpdateEmail(email, eventExists.id);
+    // create payload
+    const payload = {
+      to: email,
+      eventId: eventExists.id,
+    };
+
+    // send payload to notification microservice to send email
+    await publisher(payload, "NOTIFICATION", "send-price-update");
 
     return res.status(StatusCodes.OK).json({ message: "price added" });
   } catch (error: any) {

@@ -1,13 +1,12 @@
 import { StatusCodes } from "http-status-codes";
 import { Request, Response } from "express";
 import { ApiResponse } from "../types/response.type";
-import sendBookingEmail, {
-  EventStatusEnum,
-} from "../emails/booking/sendBookingEmail";
 import prisma from "../config/prisma.config";
 import decodeToken from "../helpers/decodeToken.helper";
 import { google } from "googleapis";
 import config from "../config/config.config";
+import { publisher } from "../services/rabbitmq-pulisher.service";
+import { EventStatusEnum } from "../common/enums/event-status.enum";
 
 const oauth2Client = new google.auth.OAuth2(
   config.OAUTH_CLIENT_ID,
@@ -70,15 +69,18 @@ export const bookAFreeEvent = async (
       },
     });
 
-    // send booking details via email
-    await sendBookingEmail(
-      email,
-      eventExists.title,
-      eventExists.date,
-      eventExists.location,
-      null,
-      EventStatusEnum.Created
-    );
+    // create payload
+    const payload = {
+      to: email,
+      eventTitle: eventExists.title,
+      location: eventExists.location,
+      time: eventExists.date,
+      paymentId: null,
+      subject: EventStatusEnum.Created,
+    };
+
+    // send payload to notification microservice to send email
+    await publisher(payload, "NOTIFICATION", "send-booking-details");
 
     calendar.events.insert({});
 
@@ -130,15 +132,18 @@ export const cancelAFreeBooking = async (
         .json({ message: "you cannot cancel a booking you did not make" });
     }
 
-    // send email
-    await sendBookingEmail(
-      email,
-      eventDetails.title,
-      eventDetails.date,
-      eventDetails.location,
-      null,
-      EventStatusEnum.Canceled
-    );
+    // create payload
+    const payload = {
+      to: email,
+      eventTitle: eventDetails.title,
+      location: eventDetails.location,
+      time: eventDetails.date,
+      paymentId: null,
+      subject: EventStatusEnum.Canceled,
+    };
+
+    // send payload to notification microservice to send email
+    await publisher(payload, "NOTIFICATION", "send-booking-details");
 
     // cancel event
     await prisma.booking.delete({ where: { id: bookingId } });

@@ -6,7 +6,7 @@ import { ApiResponse } from "../types/response.type";
 import jwt from "jsonwebtoken";
 import { User } from "@prisma/client";
 import { generateOtp } from "../helpers/generateOtp.helper";
-import { sendMessage } from "../services/rabbitmq-pulisher.service";
+import { publisher } from "../services/rabbitmq-pulisher.service";
 
 const ACCESS_TOKEN_SECRET = process.env.JWT_SECRET || "access_secret";
 const REFRESH_TOKEN_SECRET = process.env.JWT_SECRET || "refresh_secret";
@@ -194,7 +194,7 @@ export const sendVerificationOtp = async (
     // create payload
     const message = { to: user.email, otp: otp };
     //send message to notification microservice to send email
-    await sendMessage(message, "NOTIFICATION", "send-otp");
+    await publisher(message, "NOTIFICATION", "send-otp");
 
     // save otp to database
     await prisma.otp.create({ data: { otp: otp, userId: userId } });
@@ -343,7 +343,7 @@ export const sendResetPasswordOtp = async (req: Request, res: Response) => {
     };
 
     // send rquest to notification microservice to send email
-    await sendMessage(payload, "NOTIFICATION", "send-otp");
+    await publisher(payload, "NOTIFICATION", "send-otp");
     // save otp to database
     await prisma.otp.create({ data: { otp: otp, userId: userExists.id } });
 
