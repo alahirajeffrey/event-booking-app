@@ -1,10 +1,8 @@
 FROM node:lts-bullseye-slim
 
-WORKDIR /user/src/app
+WORKDIR /user/event_booking_app
 
 COPY package*.json ./
-
-USER app
 
 RUN ci --omit=dev
 
@@ -12,6 +10,6 @@ COPY src ./src
 
 RUN npm run build
 
-EXPOSE 5000
+USER node
 
 CMD ["node", "build/index.js"]
