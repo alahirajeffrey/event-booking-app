@@ -2,7 +2,7 @@ import * as amqplib from "amqplib";
 import config from "../config/config.config";
 import logger from "../helpers/logger";
 
-export const sendMessage = async (
+export const publisher = async (
   data: object,
   queueName: string,
   messagePattern: string
