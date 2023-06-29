@@ -185,7 +185,7 @@ export const cancelAFreeBooking = async (
     await prisma.booking.delete({ where: { id: bookingId } });
 
     // delete event from calender
-    // calendar.events.delete({ calendarId: "primary", eventId: eventDetails.id });
+    calendar.events.delete({ calendarId: "primary", eventId: eventDetails.id });
 
     return res.status(StatusCodes.OK).json({ message: "booking canceled" });
   } catch (error: any) {
