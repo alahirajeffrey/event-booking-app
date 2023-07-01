@@ -8,11 +8,12 @@ import config from "../config/config.config";
 import { publisher } from "../services/rabbitmq-pulisher.service";
 import { EventStatusEnum } from "../common/enums/event-status.enum";
 import logger from "../helpers/logger";
+import { createCalenderId } from "../helpers/createCalenderId.helper";
 
 const oauth2Client = new google.auth.OAuth2(
   config.OAUTH_CLIENT_ID,
   config.OAUTH_CLIENT_SECRET,
-  `${config.OAUTH_REDIRECT_BASE_URI}:${config.PORT}/auth/google/callback`
+  `${config.OAUTH_REDIRECT_BASE_URI}:${config.PORT}/api/v1/auth/google/calender/redirect`
 );
 const calendar = google.calendar({ version: "v3", auth: oauth2Client });
 
@@ -34,11 +35,15 @@ export const authGoogle = (req: Request, res: Response) => {
  * @param req
  * @param res
  */
-export const authGoogleCallback = async (req: Request, res: Response) => {
+export const authGoogleRedirect = async (
+  req: Request,
+  res: Response
+): Promise<Response<ApiResponse>> => {
   const code = req.query.code as string;
   const { tokens } = await oauth2Client.getToken(code.toString());
   oauth2Client.setCredentials(tokens);
-  res.redirect("/calendar");
+
+  return res.status(StatusCodes.OK).json({ message: "user authenticated" });
 };
 
 /**
@@ -93,32 +98,37 @@ export const bookAFreeEvent = async (
     // send payload to notification microservice to send email
     await publisher(payload, "NOTIFICATION", "send-booking-details");
 
+    const year = eventExists.date.getFullYear();
+    const month = eventExists.date.getMonth() + 1;
+    const day = eventExists.date.getDate();
+
+    // create google calender id from event it
+    const id = createCalenderId(eventExists.id);
+
     // insert event to calender
-    calendar.events.insert(
-      {
+    calendar.events
+      .insert({
         calendarId: "primary",
+        auth: oauth2Client,
         requestBody: {
-          id: eventId,
+          id: id,
           summary: `${eventExists.title}`,
           description: `${eventExists.description}`,
           start: {
-            date: `${eventExists.date}`,
+            date: `${year}-${month}-${day}`,
           },
           end: {
-            date: `${eventExists.date}`,
+            date: `${year}-${month}-${day}`,
           },
         },
-      },
-      (err: any, event: any) => {
-        if (err) {
-          logger.error(`error creating event : ${err}`);
-          return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-            message: "failed to add event to calender",
-          });
-        }
-        logger.info(`${event}`);
-      }
-    );
+      })
+      .then((event) => {
+        logger.info(`event creation status: ${event.status}`);
+      })
+      .catch((err) => {
+        logger.error(err);
+        throw err;
+      });
 
     return res.status(StatusCodes.OK).json({
       message: "event booked. booking details have been sent to your mail",
@@ -184,8 +194,18 @@ export const cancelAFreeBooking = async (
     // cancel event
     await prisma.booking.delete({ where: { id: bookingId } });
 
+    const id = createCalenderId(eventDetails.id);
     // delete event from calender
-    calendar.events.delete({ calendarId: "primary", eventId: eventDetails.id });
+    calendar.events
+      .delete({
+        calendarId: "primary",
+        eventId: id,
+        auth: oauth2Client,
+      })
+      .then(() => logger.info("event removed from calender"))
+      .catch((err) => {
+        logger.error(err);
+      });
 
     return res.status(StatusCodes.OK).json({ message: "booking canceled" });
   } catch (error: any) {
