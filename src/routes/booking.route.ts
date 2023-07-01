@@ -7,10 +7,6 @@ import * as bookingRoutes from "../controllers/booking.controller";
 
 const bookingRouter = Router();
 
-bookingRouter.get("/auth/google", bookingRoutes.authGoogle);
-
-bookingRouter.get("/auth/google/callback", bookingRoutes.authGoogleCallback);
-
 bookingRouter.post(
   "/book-free-event",
   validate(validations.validateBookAFreeEvent, {}, {}),
