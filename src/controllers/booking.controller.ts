@@ -106,8 +106,8 @@ export const bookAFreeEvent = async (
     const id = createCalenderId(eventExists.id);
 
     // insert event to calender
-    calendar.events
-      .insert({
+    calendar.events.insert(
+      {
         calendarId: "primary",
         auth: oauth2Client,
         requestBody: {
@@ -121,14 +121,17 @@ export const bookAFreeEvent = async (
             date: `${year}-${month}-${day}`,
           },
         },
-      })
-      .then((event) => {
-        logger.info(`event creation status: ${event.status}`);
-      })
-      .catch((err) => {
-        logger.error(err);
-        throw err;
-      });
+      },
+      (err, event) => {
+        if (err) {
+          logger.info(
+            `There was an error contacting the Calendar service: ${err}`
+          );
+          return;
+        }
+        logger.info(`Event created: ${event?.statusText}`);
+      }
+    );
 
     return res.status(StatusCodes.OK).json({
       message: "event booked. booking details have been sent to your mail",
@@ -196,16 +199,11 @@ export const cancelAFreeBooking = async (
 
     const id = createCalenderId(eventDetails.id);
     // delete event from calender
-    calendar.events
-      .delete({
-        calendarId: "primary",
-        eventId: id,
-        auth: oauth2Client,
-      })
-      .then(() => logger.info("event removed from calender"))
-      .catch((err) => {
-        logger.error(err);
-      });
+    calendar.events.delete({
+      calendarId: "primary",
+      eventId: id,
+      auth: oauth2Client,
+    });
 
     return res.status(StatusCodes.OK).json({ message: "booking canceled" });
   } catch (error: any) {
