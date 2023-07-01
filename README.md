@@ -1,4 +1,9 @@
 # Event Booking App API Documentation
+Backend for an event planning and booking website. Built using a microservice architecture i.e with three seperate services
+- [Core service](https://github.com/alahirajeffrey/event-booking-app): This service is responsible for performing the core operations of the app. It is being built using express, typescript, prisma and postgres
+- [Notification service](https://github.com/alahirajeffrey/event-booking-microservices/tree/main/notification_microservice): This is responsible for handling email notifications and would probably be setup to handle push notifications in the future. It is being built using nestjs.
+- [Payment service](https://github.com/alahirajeffrey/event-booking-microservices/tree/main/payment_microservice): This service would be responsible for handling payment. It would be build using nestjs, postres and prisma
+
 
 ## Features
 
