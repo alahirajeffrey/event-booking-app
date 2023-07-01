@@ -1,6 +1,5 @@
 import * as jwt from "jsonwebtoken";
-
-const ACCESS_TOKEN_SECRET = process.env.JWT_SECRET || "access_secret";
+import config from "../config/config.config";
 
 /**
  * decode jwt token so as to get user id and check to see if a user owns a resource before performing an update or delete
@@ -8,7 +7,7 @@ const ACCESS_TOKEN_SECRET = process.env.JWT_SECRET || "access_secret";
  */
 const decodeToken = (token: string) => {
   const authToken = token.split(" ")[1];
-  return jwt.verify(authToken, ACCESS_TOKEN_SECRET, (err, user) => {
+  return jwt.verify(authToken, config.JWT_ACCESS_TOKEN, (err, user) => {
     if (err) return err;
     return user;
   });
