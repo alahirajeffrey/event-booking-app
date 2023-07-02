@@ -22,6 +22,7 @@ model User {
   events      Event[]
   bookings    Booking[]
   otp         Otp?
+  review      Review?
 }
 
 model Event {
@@ -46,6 +47,8 @@ model Review {
   review      String
   event       Event     @relation(fields: [eventId], references: [id])
   eventId     String
+  reviewer    User      @relation(fields: [reviewerId], references: [id])
+  reviewerId  String   @unique
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
 
