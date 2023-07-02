@@ -17,6 +17,7 @@
   "author": "alahira jeffrey",
   "license": "MIT",
   "dependencies": {
+    "@types/passport-google-oauth20": "^2.0.11",
     "amqplib": "^0.10.3",
     "axios": "^1.4.0",
     "bcrypt": "^5.1.0",
@@ -31,6 +32,7 @@
     "jsonwebtoken": "^9.0.0",
     "nodemailer": "^6.8.0",
     "passport": "^0.6.0",
+    "passport-google-oauth20": "^2.0.0",
     "passport-jwt": "^4.0.1",
     "passport-local": "^1.0.0",
     "prisma": "^4.14.1",
