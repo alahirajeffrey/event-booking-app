@@ -6,12 +6,8 @@ import { ApiResponse } from "../types/response.type";
 import jwt from "jsonwebtoken";
 import { User } from "@prisma/client";
 import { generateOtp } from "../helpers/generateOtp.helper";
-import sendOtpEmail from "../emails/otp/sendEmailOtp";
-
-const ACCESS_TOKEN_SECRET = process.env.JWT_SECRET || "access_secret";
-const REFRESH_TOKEN_SECRET = process.env.JWT_SECRET || "refresh_secret";
-const ACCESS_EXPIRESIN = process.env.EXPIRESIN || "15m";
-const REFRESH_EXPIRESIN = process.env.EXPIRESIN || "1d";
+import { publisher } from "../services/rabbitmq-pulisher.service";
+import config from "../config/config.config";
 
 /**
  * checks if a user exists or not by email
@@ -100,14 +96,22 @@ export const loginUser = async (
     }
 
     // generate access tokens if password match
-    const accessToken = jwt.sign({ id: userExists.id }, ACCESS_TOKEN_SECRET, {
-      expiresIn: ACCESS_EXPIRESIN,
-    });
+    const accessToken = jwt.sign(
+      { id: userExists.id },
+      config.JWT_ACCESS_TOKEN,
+      {
+        expiresIn: config.EXPIRES_IN,
+      }
+    );
 
     // generate refresh tokens
-    const refreshToken = jwt.sign({ id: userExists.id }, REFRESH_TOKEN_SECRET, {
-      expiresIn: REFRESH_EXPIRESIN,
-    });
+    const refreshToken = jwt.sign(
+      { id: userExists.id },
+      config.JWT_REFRESH_TOKEN,
+      {
+        expiresIn: config.EXPIRES_IN,
+      }
+    );
 
     // update user data with refresh token
     await prisma.user.update({
@@ -191,8 +195,13 @@ export const sendVerificationOtp = async (
 
     // generate and send otp
     const otp = generateOtp();
+    // create payload
+    const message = { to: user.email, otp: otp };
+    //send message to notification microservice to send email
+    await publisher(message, "NOTIFICATION", "send-otp");
+
+    // save otp to database
     await prisma.otp.create({ data: { otp: otp, userId: userId } });
-    await sendOtpEmail(user.email, otp);
 
     return res
       .status(StatusCodes.CREATED)
@@ -330,8 +339,17 @@ export const sendResetPasswordOtp = async (req: Request, res: Response) => {
 
     // generate and send otp
     const otp = generateOtp();
+
+    // craete payload to send to notification service
+    const payload = {
+      to: userExists.email,
+      otp: otp,
+    };
+
+    // send rquest to notification microservice to send email
+    await publisher(payload, "NOTIFICATION", "send-otp");
+    // save otp to database
     await prisma.otp.create({ data: { otp: otp, userId: userExists.id } });
-    await sendOtpEmail(userExists.email, otp);
 
     return res.status(StatusCodes.CREATED).json({ message: "reset otp sent" });
   } catch (error: any) {

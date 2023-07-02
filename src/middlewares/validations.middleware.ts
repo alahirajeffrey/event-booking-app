@@ -127,3 +127,23 @@ export const validateSetOrUpdateEventPrice = {
     email: Joi.string().email().required(),
   }),
 };
+
+export const validateBookAFreeEvent = {
+  body: Joi.object({
+    eventId: Joi.string().required().uuid(),
+    email: Joi.string().email().required(),
+  }),
+};
+
+export const validateCancelAFreeBooking = {
+  body: Joi.object({
+    email: Joi.string().email().required(),
+  }),
+  params: Joi.object({
+    bookingId: Joi.string().required().uuid(),
+  }),
+};
+
+export const validateBookAPaidEvent = {};
+
+export const validateCancelAPaidBooking = {};

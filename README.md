@@ -246,7 +246,7 @@ $ npm run test
 
 ### **Create a new event**
 
-**URL:** `/api/v1/event/register`
+**URL:** `/api/v1/event/`
 
 **Method:** `POST`
 
@@ -444,6 +444,64 @@ $ npm run test
 {
   "message": "price added",
   "email": "alahirajeffrey@gmail.com"
+}
+```
+
+## Booking Endpoints
+
+### **Book a free event**
+
+**URL:** `/api/v1/booking/book-free-event`
+
+**Method:** `POST`
+
+**Description:**Book a free event.
+
+**Request Body:**
+
+```json
+{
+  "eventId": "a0b5ed8d-8400-4ee1-a325-cf19ddeed82e"
+}
+```
+
+**Response:**
+
+```json
+{
+  "message": "event booked. booking details have been sent to your mail"
+}
+```
+
+### **Cancel a free booking**
+
+**URL:** `/api/v1/booking/cancel-free-booking/:bookingId`
+
+**Method:** `DELETE`
+
+**Description:**Cancel an free booking.
+
+**Request Params:**
+
+```json
+{
+  "eventId": "a0b5ed8d-8400-4ee1-a325-cf19ddeed82e"
+}
+```
+
+**Request Body:**
+
+```json
+{
+  "email": "alahirajeffrey@gmail.com"
+}
+```
+
+**Response:**
+
+```json
+{
+  "message": "booking canceled"
 }
 ```
 

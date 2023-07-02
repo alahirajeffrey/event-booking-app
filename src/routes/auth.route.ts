@@ -4,6 +4,10 @@ import * as validations from "../middlewares/validations.middleware";
 import { validate } from "express-validation";
 import passport from "passport";
 import "../config/passport.config";
+import {
+  authGoogle,
+  authGoogleRedirect,
+} from "../controllers/booking.controller";
 
 const authRouter = Router();
 
@@ -12,6 +16,10 @@ authRouter.post(
   validate(validations.validateRegisterUser, {}, {}),
   authRoutes.registerUser
 );
+
+authRouter.get("/google/calender", authGoogle);
+
+authRouter.get("/google/calender/redirect", authGoogleRedirect);
 
 authRouter.post(
   "/login",
