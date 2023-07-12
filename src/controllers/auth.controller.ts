@@ -88,7 +88,10 @@ export const loginUser = async (
         .send({ message: "User does not exist" });
 
     // check if password matches
-    const passwordMatches = await bcrypt.compare(password, userExists.password);
+    const passwordMatches = await bcrypt.compare(
+      password,
+      userExists.password as string
+    );
     if (!passwordMatches) {
       return res
         .status(StatusCodes.UNAUTHORIZED)
@@ -149,7 +152,10 @@ export const changePassword = async (
         .send({ message: "User does not exist" });
 
     // compare user passwords
-    const isPasswordCorrect = await bcrypt.compare(oldPassword, user.password);
+    const isPasswordCorrect = await bcrypt.compare(
+      oldPassword,
+      user.password as string
+    );
     if (!isPasswordCorrect) {
       return res
         .status(StatusCodes.UNAUTHORIZED)
