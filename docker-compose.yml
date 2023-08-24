@@ -1,16 +1,5 @@
 version: "3.8"
 services:
-  test_db:
-    image: postgres:14.1-alpine
-    environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=password
-    restart: always
-    ports:
-      - "5432: 5432"
-    networks:
-      - event-booking-api
-
   prod_db:
     image: postgres:14.1-alpine
     env_file:
@@ -27,14 +16,28 @@ services:
     networks:
       - event-booking-api
 
-  api:
+  core:
     depends_on:
       - prod_db
-    build: .
+    build: ./core-service
     networks:
       - event-booking-api
     ports:
       - "5000:5000"
+
+    notification:
+      depends_on:
+        - core
+      build: ./notification-service
+      networks:
+        - event-booking-api
+      ports:
+        - "5001:5001"
+
+    rabbitmq:
+      image: rabbitmq:management
+      container_name: rabbitmq
+      ports:
 
 networks:
   event-booking-api:
