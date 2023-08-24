@@ -1,16 +1,11 @@
-# Event Booking App API Documentation
-Backend for an event planning and booking website. Built using a microservice architecture i.e with three seperate services
-- [Core service](https://github.com/alahirajeffrey/event-booking-app): This service is responsible for performing the core operations of the app. It is being built using express, typescript, prisma and postgres
-- [Notification service](https://github.com/alahirajeffrey/event-booking-microservices/tree/main/notification_microservice): This is responsible for handling email notifications and would probably be setup to handle push notifications in the future. It is being built using nestjs.
-- [Payment service](https://github.com/alahirajeffrey/event-booking-microservices/tree/main/payment_microservice): This service would be responsible for handling payment. It would be build using fastapi and postres
+# Core Service Documentation
 
+This README file contains documentation about the core service
 
 ## Features
 
 - Authentication
 - Authorization
-- Stripe payment integration
-- Email notification
 - Google calender integration
 - Qr code generation
 - Rate limiting
@@ -21,7 +16,8 @@ Backend for an event planning and booking website. Built using a microservice ar
 - [PostgreSQL](https://www.postgresql.org/) is a powerful, open source object-relational database system with over 35 years of active development that has earned it a strong reputation for reliability, feature robustness, and performance.
 - [Typescript](https://www.typescriptlang.org/) is a strongly typed programming language that builds on JavaScript, giving you better tooling at any scale.
 - [Express](https://expressjs.com/) is a minimal and flexible Node.js web application framework that provides a robust set of features for web and mobile applications.
-- [Prisma](https://www.prisma.io/) Prisma is a server-side library that helps developers read and write data to the database in an intuitive, efficient and safe way. It is easy to integrate into your framework of choice, Prisma simplifies database access, saves repetitive CRUD boilerplate and increases type safety. Its the perfect companion for building production-grade, robust and scalable web applications
+- [Prisma](https://www.prisma.io/) Prisma is a server-side library that helps developers read and write data to the database in an intuitive, efficient and safe way. It is easy to integrate into your framework of choice, Prisma simplifies database access, saves repetitive CRUD boilerplate and increases type safety. Its the perfect companion for building production-grade, robust and scalable web applications.
+- [Rabbitmq](https://rabbitmq.com) is one of the most popular open source message brokers and is used worldwide by both startups and large enterprises. It is lightweight and supports multiple messaging protocols.
 
 ## How to Setup
 
