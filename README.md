@@ -20,6 +20,7 @@ Backend for an event planning and booking website. Built using a microservice ar
 - [Typescript](https://www.typescriptlang.org/) is a strongly typed programming language that builds on JavaScript, giving you better tooling at any scale.
 - [Express](https://expressjs.com/) is a minimal and flexible Node.js web application framework that provides a robust set of features for web and mobile applications.
 - [Prisma](https://www.prisma.io/) Prisma is a server-side library that helps developers read and write data to the database in an intuitive, efficient and safe way. It is easy to integrate into your framework of choice, Prisma simplifies database access, saves repetitive CRUD boilerplate and increases type safety. Its the perfect companion for building production-grade, robust and scalable web applications
+- [Nestjs](https://nestjs.com/) is aprogressive Node.js framework for building efficient, reliable and scalable server-side applications.
 
 ## How to Setup
 
