@@ -1,7 +1,7 @@
 {
-  "name": "event-booking-app",
+  "name": "core-service",
   "version": "1.0.0",
-  "description": "event booking app",
+  "description": "core service",
   "main": "index.js",
   "scripts": {
     "test": "jest",
