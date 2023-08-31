@@ -1,6 +1,6 @@
 FROM node:lts-bullseye-slim
 
-WORKDIR /user/event_booking_app
+WORKDIR /user/core
 
 COPY package*.json ./
 
