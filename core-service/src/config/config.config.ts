@@ -8,7 +8,7 @@ const config = {
 
   NODE_ENV: process.env.NODE_ENV || "development",
 
-  PORT: process.env.PORT || 5000,
+  PORT: process.env.PORT || 5001,
 
   OAUTH_CLIENT_ID: process.env.OAUTH_CLIENT_ID || "OAUTH_CLIENT_ID",
   OAUTH_CLIENT_SECRET: process.env.OAUTH_CLIENT_SECRET || "OAUTH_CLIENT_SECRET",
